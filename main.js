@@ -19,12 +19,12 @@ rl.question('Enter Game ID, Player names, and player count (all seperated by com
     playernames = splits[1]
     playercount = parseInt(splits[2])
 
-    //Generic challenge function that works without the AngularJS context
+    //Generic challenge function that works without the AngularJS context. Also used to create a websocket path.
     function challenge(msg, offset){
     return msg.replace(/./g, function(char, position) {return String.fromCharCode((((char.charCodeAt(0) * position) + offset) % 77) + 48);})
     }
 
-    //Some obfuscated function. Used to create a websocket path given the ase64 decoded session tocket & completed challenge
+    //Some obfuscated function ripped from Kahoot.it. Used to create a websocket path given the base64 decoded session tocket & completed challenge
     function h(e, t) {
         for (var n = "", r = 0; r < e.length; r++) {
                 var o = e.charCodeAt(r)
@@ -35,6 +35,7 @@ rl.question('Enter Game ID, Player names, and player count (all seperated by com
         return n
      }
 
+    //Iterate over how many plaers the user wants connected
     for (let i = 0; i < playercount; i++){
         let ws;
         let CLIENT_ID;
@@ -72,6 +73,7 @@ rl.question('Enter Game ID, Player names, and player count (all seperated by com
             ws = new WebSocket('wss://kahoot.it/cometd/' + game_id + "/" + yay);
             ws.on('open', function open() {
                 console.log("Websocket opened")
+                //Tell the server we said hello
                 ws.send(kahoot.create_handshake_packet(1))
             });
 
@@ -81,6 +83,8 @@ rl.question('Enter Game ID, Player names, and player count (all seperated by com
                 if (parseInt(response[0]["id"]) == 1){
                     //Step 1 
                     CLIENT_ID = response[0]["clientId"]
+
+                    //Actually connect to the game
                     ws.send(kahoot.create_data_packet("/service/controller", CLIENT_ID, 
                         {
                             type: "login", 

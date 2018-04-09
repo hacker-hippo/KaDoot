@@ -1,4 +1,3 @@
-
 module.exports.create_data_packet = function (channel, clientID, data, id){
     var packet = [{
         "channel": channel,
@@ -6,9 +5,13 @@ module.exports.create_data_packet = function (channel, clientID, data, id){
         "id": id.toString(),
         "data": data
     }]
-    id++
     return JSON.stringify(packet)
 }
+
+/*
+ *
+ *
+    * */
 
 module.exports.create_handshake_packet = function(id){
     var packet = [{
@@ -22,6 +25,5 @@ module.exports.create_handshake_packet = function(id){
         },
         "id":id.toString()
     }]
-    id++
     return JSON.stringify(packet)
 }
